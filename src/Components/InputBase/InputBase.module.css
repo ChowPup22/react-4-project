@@ -1,0 +1,30 @@
+label {
+	display: block;
+	position: relative;
+	width: fit-content;
+	margin: 0 auto;
+}
+
+.input_root {
+	border: 2px solid rgb(162, 159, 159);
+	border-radius: 5px;
+	padding: 10px;
+	line-height: 1.4;
+	width: 360px;
+	margin-bottom: 18px;
+}
+
+.header {
+	font-size: 16px;
+	margin-bottom: 10px;
+	text-align: left;
+	color: rgb(43, 42, 42);
+}
+
+.error {
+	color: red;
+	font-size: 14px;
+	position: absolute;
+	top: 14px;
+	right: 5px;
+}
