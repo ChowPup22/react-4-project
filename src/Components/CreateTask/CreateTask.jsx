@@ -11,7 +11,7 @@ import { validations } from '../../Constants/Validations';
 
 export const CreateTask = () => {
 	const { postNewTask } = useAPIContext();
-	const { currentUserId, allUsers } = useUserAuthContext();
+	const { currentUserId, allUsers, currentUser } = useUserAuthContext();
 	const [redirect, setRedirect] = useState(false);
 	const [direct, setDirect] = useState(false);
 	const [title, setTitle] = useState('');
@@ -23,12 +23,9 @@ export const CreateTask = () => {
 
 	useEffect(() => {
 		if (currentUserId !== null) {
-			const findUser = (id) =>
-				allUsers.find((user) => user.meta.userTaskId === id);
-
-			if (findUser(currentUserId).meta.isAdmin === true) {
+			if (currentUser.meta.isAdmin === true) {
 				setIsAdmin(true);
-			} else if (findUser(currentUserId).meta.isAdmin === false) {
+			} else if (currentUser.meta.isAdmin === false) {
 				setIsAdmin(false);
 				setUserTaskId(currentUserId);
 			}
@@ -38,7 +35,7 @@ export const CreateTask = () => {
 				setRedirect(true);
 			}, 3000);
 		}
-	}, [currentUserId, allUsers]);
+	}, [currentUserId, allUsers, currentUser]);
 
 	const handleInputState = {
 		title: (value) => setTitle(value),
