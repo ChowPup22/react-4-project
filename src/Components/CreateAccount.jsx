@@ -108,7 +108,7 @@ export const CreateAccount = () => {
 				lastName,
 				email,
 				meta: {
-					pass,
+					password: pass,
 					userTaskId: crypto.randomUUID(),
 					dateCreated: new Date().toJSON(),
 					isAdmin: false,
@@ -124,6 +124,7 @@ export const CreateAccount = () => {
 					if (res.data) {
 						setCurrentUser(res.data);
 						setCurrentUserId(res.data.meta.userTaskId);
+						setAllUsers((prev) => [...prev, newUser]);
 						setSubmit(true);
 						return res.toast;
 					} else {

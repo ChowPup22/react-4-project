@@ -130,7 +130,7 @@ input:checked + .sliderLg:before {
 	border-radius: 8px;
 	width: 300px;
 	padding: 5px;
-	margin-right: 20px;
+	margin-left: 20px;
 	margin-bottom: 20px;
 	position: relative;
 }
