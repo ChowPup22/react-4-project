@@ -64,7 +64,15 @@ that they have been assigned.
 
 ### 3. Add a User Profile Page
 
-This would allow users to view or update their profile information.
+This would allow users to view or update their profile information. This could be a possible location for a feature change mention in No4 below.
+
+### 4. Add 'Super Admin' Role
+
+This would be a website owner role. They would have access to the total website and be able to create new Admins(team leaders). At
+this point, only the hardcoded admin user has access to certain features. Users cannot select admin roles when creating accounts.
+The 'Super Admin' would have a specific dashboard that receives the 'application' for team leader roles. They would be able to view
+the application and approve or deny the application. If approved, the user would be able to login and have access to the admin dashboard.
+(this would require a new table in the database to store the applications and user dashboard would need to display create application button)
 
 ## Available Scripts
 
