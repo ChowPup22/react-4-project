@@ -87,7 +87,6 @@ export const CreateMeeting = () => {
 
 	const handleCreateMeeting = async (e) => {
 		e.preventDefault();
-		console.log(dateDueBy);
 		const err = checkErrorBeforeSubmit(handleValues);
 		if (!err) {
 			const meeting = {
@@ -129,6 +128,7 @@ export const CreateMeeting = () => {
 						<label>
 							<div className={styles.header}>Title</div>
 							<input
+								key='titleInput'
 								className={styles.input_root}
 								name='title'
 								value={title}
@@ -142,6 +142,7 @@ export const CreateMeeting = () => {
 						<label>
 							<div className={styles.header}>Description</div>
 							<textarea
+								key='descriptionInput'
 								className={`${styles.input_root} ${styles.textarea}`}
 								name='description'
 								value={description}
@@ -162,6 +163,7 @@ export const CreateMeeting = () => {
 							<label>
 								<div className={styles.header}>Assign User 1</div>
 								<select
+									key='userId1Input'
 									className={styles.input_root}
 									name='userId1'
 									value={userId1}
@@ -188,6 +190,7 @@ export const CreateMeeting = () => {
 						<label>
 							<div className={styles.header}>Assign User 2</div>
 							<select
+								key='userId2Input'
 								className={styles.input_root}
 								name='userId2'
 								value={userId2}

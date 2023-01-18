@@ -143,6 +143,30 @@
         "isAdmin": false
       },
       "id": 11
+    },
+    {
+      "firstName": "Test",
+      "lastName": "User",
+      "email": "test@domain.com",
+      "meta": {
+        "password": "test@1234",
+        "userTaskId": "0b93477d-6305-4ebb-a096-0102c9e16901",
+        "dateCreated": "2023-01-18T15:42:41.973Z",
+        "isAdmin": false
+      },
+      "id": 12
+    },
+    {
+      "firstName": "TestTwo",
+      "lastName": "User",
+      "email": "test2@domain.com",
+      "meta": {
+        "password": "test@1234",
+        "userTaskId": "a07c1396-b510-4b2c-9955-c0907c3ab1e0",
+        "dateCreated": "2023-01-18T15:55:53.000Z",
+        "isAdmin": false
+      },
+      "id": 13
     }
   ],
   "tasks": [
@@ -365,6 +389,16 @@
       "userTaskId": "6a0736d7-7c1d-4fce-baf9-9cdd9933c0e7",
       "createdBy": "73b87c56-c33b-433c-b198-4f6fbfe05516",
       "id": 21
+    },
+    {
+      "title": "Test Task",
+      "description": "This is a test created by a new user made using the \"Create Account \" Option",
+      "taskComplete": false,
+      "dateDueBy": "2023-01-18T22:00:00.000Z",
+      "dateCreated": "2023-01-18T15:43:45.715Z",
+      "userTaskId": "0b93477d-6305-4ebb-a096-0102c9e16901",
+      "createdBy": "0b93477d-6305-4ebb-a096-0102c9e16901",
+      "id": 22
     }
   ],
   "meetings": [
@@ -488,6 +522,17 @@
       "dateDueBy": "2023-01-18T05:00:00.000Z",
       "meetingComplete": false,
       "id": 10
+    },
+    {
+      "title": "Double Check your work",
+      "description": "This is a test created by a new user. Testing all endpoints and logic work correctly ",
+      "userId1": "0b93477d-6305-4ebb-a096-0102c9e16901",
+      "userId2": "73b87c56-c33b-433c-b198-4f6fbfe05516",
+      "dateCreated": "2023-01-18T15:45:04.571Z",
+      "createdBy": "0b93477d-6305-4ebb-a096-0102c9e16901",
+      "dateDueBy": "2023-01-18T22:00:00.000Z",
+      "meetingComplete": false,
+      "id": 11
     }
   ]
 }
