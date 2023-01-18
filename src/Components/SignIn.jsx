@@ -11,8 +11,7 @@ import InputBase from './InputBase/InputBase';
 import { validations } from '../Constants/Validations';
 
 export const SignIn = () => {
-	const { allUsers, setAllUsers, setCurrentUser, setCurrentUserId } =
-		useUserAuthContext();
+	const { allUsers, setAllUsers, registerUser } = useUserAuthContext();
 	const { getAllUsers } = useAPIContext();
 	const [email, setEmail] = useState('');
 	const [pass, setPass] = useState('');
@@ -86,8 +85,7 @@ export const SignIn = () => {
 			const user = allUsers.find((item) => item.email === email);
 			if (user) {
 				if (user.meta.password === pass) {
-					setCurrentUser(user);
-					setCurrentUserId(user.meta.userTaskId);
+					registerUser(user);
 					setSubmit(true);
 				} else {
 					setInputError((prev) => ({

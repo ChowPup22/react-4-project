@@ -59,6 +59,7 @@ export const paragraph = {
   fontWeight: '400',
   maxWidth: '700px',
   margin: '0 auto',
+  textAlign: 'center',
 }
 
 export const buttonP = {

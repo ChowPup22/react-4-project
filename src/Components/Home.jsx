@@ -1,7 +1,17 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useUserAuthContext } from '../Context/UserAuth.Context';
 import { headerP, paragraph, buttonP, theme } from '../Constants/styles';
 
 export const Home = () => {
+	const { currentUserId } = useUserAuthContext();
+
+	useEffect(() => {
+		if (currentUserId !== '') {
+			window.location.href = '/dashboard';
+		}
+	}, [currentUserId]);
+
 	return (
 		<>
 			<h3 style={headerP}>Home</h3>
@@ -11,7 +21,9 @@ export const Home = () => {
 				inventore error eos nostrum. Sapiente reiciendis dolorum voluptatum
 				nisi culpa quae rerum ullam?
 			</p>
-			<div style={{ display: 'flex', margin: '25px 325px' }}>
+			<div
+				style={{ display: 'flex', margin: '25px auto', maxWidth: '500px' }}
+			>
 				<button style={buttonP}>
 					<Link
 						style={{

@@ -11,9 +11,8 @@ import InputBase from './InputBase/InputBase';
 import { validations } from '../Constants/Validations';
 
 export const CreateAccount = () => {
-	const { allUsers, setAllUsers, setCurrentUser, setCurrentUserId } =
-		useUserAuthContext();
-	const { getAllUsers, postNewUser } = useAPIContext();
+	const { allUsers, setAllUsers, registerNewUser } = useUserAuthContext();
+	const { getAllUsers } = useAPIContext();
 	const [email, setEmail] = useState('');
 	const [pass, setPass] = useState('');
 	const [passConfirm, setPassConfirm] = useState('');
@@ -120,17 +119,8 @@ export const CreateAccount = () => {
 					emailError: 'User already exists',
 				});
 			} else {
-				postNewUser(newUser).then((res) => {
-					if (res.data) {
-						setCurrentUser(res.data);
-						setCurrentUserId(res.data.meta.userTaskId);
-						setAllUsers((prev) => [...prev, newUser]);
-						setSubmit(true);
-						return res.toast;
-					} else {
-						return res.toast;
-					}
-				});
+				registerNewUser(newUser);
+				setSubmit(true);
 			}
 		}
 	};

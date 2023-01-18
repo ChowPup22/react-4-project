@@ -12,12 +12,14 @@ export const Dashboard = () => {
 	const [redirect, setRedirect] = useState(false);
 	const [allTasks, setAllTasks] = useState([]);
 	const [allMeetings, setAllMeetings] = useState([]);
-	const { currentUserId } = useUserAuthContext();
+	const { currentUserId, currentUser, logoutUser } = useUserAuthContext();
 	const { getAllTasks, getAllMeetings } = useAPIContext();
 
 	useEffect(() => {
-		if (currentUserId !== null) {
-			getAllTasks(currentUserId).then((res) => {
+		const user = JSON.parse(localStorage.getItem('user'));
+
+		if (user) {
+			getAllTasks(user.meta.userTaskId).then((res) => {
 				if (res.data) {
 					setAllTasks(res.data);
 					return res.toast;
@@ -26,7 +28,7 @@ export const Dashboard = () => {
 				}
 			});
 
-			getAllMeetings(currentUserId).then((res) => {
+			getAllMeetings(user.meta.userTaskId).then((res) => {
 				if (res.data) {
 					setAllMeetings(res.data);
 					return res.toast;
@@ -34,13 +36,13 @@ export const Dashboard = () => {
 					return res.toast;
 				}
 			});
-		} else if (currentUserId === null) {
+		} else if (!user) {
 			toast.error('Please login to view dashboard', toastStyle);
 			setTimeout(() => {
 				setRedirect(true);
 			}, 3000);
 		}
-	}, [currentUserId, getAllMeetings, getAllTasks]);
+	}, [currentUser, currentUserId, getAllMeetings, getAllTasks]);
 
 	const refetchTasks = () => {
 		getAllTasks(currentUserId).then((res) => {
@@ -60,6 +62,11 @@ export const Dashboard = () => {
 				return res.toast;
 			}
 		});
+	};
+
+	const handleLogout = () => {
+		logoutUser();
+		setRedirect(true);
 	};
 
 	return (
@@ -156,7 +163,7 @@ export const Dashboard = () => {
 					right: '20px',
 				}}
 			>
-				<Link
+				<button
 					style={{
 						color: '#fff',
 						textDecoration: 'none',
@@ -164,12 +171,10 @@ export const Dashboard = () => {
 						padding: '3px 5px',
 						borderRadius: '5px',
 					}}
-					to='/'
-					reloadDocument={true}
-					replace={true}
+					onClick={handleLogout}
 				>
 					Sign Out
-				</Link>
+				</button>
 			</div>
 			<ToastContainer />
 		</>

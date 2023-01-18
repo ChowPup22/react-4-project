@@ -11,7 +11,7 @@ import { validations } from '../../Constants/Validations';
 
 export const CreateMeeting = () => {
 	const { postNewMeeting } = useAPIContext();
-	const { currentUserId, allUsers } = useUserAuthContext();
+	const { currentUserId, allUsers, currentUser } = useUserAuthContext();
 	const [redirect, setRedirect] = useState(false);
 	const [direct, setDirect] = useState(false);
 	const [title, setTitle] = useState('');
@@ -24,12 +24,9 @@ export const CreateMeeting = () => {
 
 	useEffect(() => {
 		if (currentUserId !== null) {
-			const findUser = (id) =>
-				allUsers.find((user) => user.meta.userTaskId === id);
-
-			if (findUser(currentUserId).meta.isAdmin === true) {
+			if (currentUser.meta.isAdmin === true) {
 				setIsAdmin(true);
-			} else if (findUser(currentUserId).meta.isAdmin === false) {
+			} else if (currentUser.meta.isAdmin === false) {
 				setIsAdmin(false);
 				setUserId1(currentUserId);
 			}
@@ -39,7 +36,7 @@ export const CreateMeeting = () => {
 				setRedirect(true);
 			}, 3000);
 		}
-	}, [currentUserId, allUsers]);
+	}, [currentUserId, allUsers, currentUser]);
 
 	const handleInputState = {
 		title: (value) => setTitle(value),
