@@ -1,445 +1,234 @@
 import { createContext, useContext } from 'react';
-import { toast } from 'react-toastify';
-import { toastStyle, toastStyle2 } from '../Constants/styles';
 
 const APIContext = createContext();
 
 export const APIProvider = ({ children }) => {
-	const getAllTasks = async (userTaskId) => {
-		return new Promise(async (success, failure) => {
-			try {
-				const response = await fetch(
-					`http://localhost:3022/tasks?userTaskId=${userTaskId}`
-				);
-				if (response.ok) {
-					const json = await response.json();
-					const data = json.map((task) => {
-						const {
-							id,
-							title,
-							description,
-							userTaskId,
-							createdBy,
-							dateCreated,
-							dateDueBy,
-							taskComplete,
-						} = task;
-						return {
-							title,
-							description,
-							userTaskId,
-							createdBy,
-							dateCreated,
-							dateDueBy,
-							taskComplete,
-							id,
-						};
-					});
-					return success({
-						data,
-						toast: toast.success(
-							"Tasks Loaded! Let's get busy!",
-							toastStyle
-						),
-					});
-				} else {
-					failure(
-						new Error(`${response.status}: ${response.statusText}`),
-						toast.error(
-							`Server Error:  ${response.status}~ ${response.statusText}`,
-							toastStyle
-						)
-					);
-				}
-			} catch (err) {
-				return failure({
-					data: null,
-					toast: toast.error(err.message, toastStyle),
-				});
-			}
-		});
+	const getAllTasks = async (userId) => {
+		const response = await fetch(
+			`http://localhost:3022/tasks?userId=${userId}`
+		)
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to get Tasks');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
 	};
 
-	const getAllMeetings = async (userTaskId) => {
-		return new Promise(async (success, failure) => {
-			try {
-				const response1 = await fetch(
-					`http://localhost:3022/meetings?userId1=${userTaskId}`
-				);
-				const response2 = await fetch(
-					`http://localhost:3022/meetings?userId2=${userTaskId}`
-				);
-				if (response1.ok && response2.ok) {
-					const json1 = await response1.json();
-					const json2 = await response2.json();
-					const data1 = json1.map((meeting) => {
-						const {
-							id,
-							title,
-							description,
-							userId1,
-							userId2,
-							dateCreated,
-							createdBy,
-							dateDueBy,
-							meetingComplete,
-						} = meeting;
-						return {
-							title,
-							description,
-							userId1,
-							userId2,
-							dateCreated,
-							createdBy,
-							dateDueBy,
-							meetingComplete,
-							id,
-						};
-					});
-					const data2 = json2.map((meeting) => {
-						const {
-							id,
-							title,
-							description,
-							userId1,
-							userId2,
-							dateCreated,
-							createdBy,
-							dateDueBy,
-							meetingComplete,
-						} = meeting;
-						return {
-							title,
-							description,
-							userId1,
-							userId2,
-							dateCreated,
-							createdBy,
-							dateDueBy,
-							meetingComplete,
-							id,
-						};
-					});
-					return success({
-						data: [...data1, ...data2],
-						toast: toast.success('Meetings retrieved! ', toastStyle2),
-					});
-				} else {
-					failure(
-						new Error(
-							`${response1.status}: ${response1.statusText} --- ${response2.status}: ${response2.statusText}`
-						),
-						toast.error(
-							`Server Error:  ${response1.status}~ ${response1.statusText} ${response2.status}~ ${response2.statusText}`,
-							toastStyle2
-						)
-					);
-				}
-			} catch (err) {
-				return failure({
-					data: null,
-					toast: toast.error(err.message, toastStyle2),
-				});
-			}
-		});
+	const getAllMeetings = async () => {
+		const result = await fetch(`http://localhost:3022/meetings`)
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to get meeting');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+
+		return result;
+	};
+
+	const getAllMeetingResponses = async (userId) => {
+		const response = await fetch(
+			`http://localhost:3022/meetingResponses?userId=${userId}`
+		)
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to get Meeting Responses');
+				const data = res.json();
+				if (data.length) return getAllMeetings(data);
+				return;
+			})
+			.catch((err) => console.log(err));
+		return response;
 	};
 
 	const postNewMeeting = async (meeting) => {
-		return new Promise(async (success, failure) => {
-			try {
-				const response = await fetch(`http://localhost:3022/meetings`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(meeting),
-				});
-				if (response.ok) {
-					const json = await response.json();
-					return success({
-						data: json,
-						toast: toast.success(
-							"Meeting created! Let's get motivated! ",
-							toastStyle2
-						),
-					});
-				} else {
-					failure(
-						new Error(`${response.status}: ${response.statusText}`),
-						toast.error(
-							`Server Error:  ${response.status}~ ${response.statusText}`,
-							toastStyle2
-						)
-					);
-				}
-			} catch (err) {
-				return failure({
-					data: null,
-					toast: toast.error(err.message, toastStyle2),
-				});
+		const response = await fetch(`http://localhost:3022/meetings`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(meeting),
+		})
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to create new Meeting');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
+	};
+
+	const postMeetingResponse = async (meetingResponse) => {
+		const response = await fetch(
+			'http://localhost:3022/meetingResponses',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(meetingResponse),
 			}
-		});
+		)
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to post meeting response');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
+	};
+
+	const archiveMeetingResponses = async (meetingId) => {
+		const response = await fetch(
+			`http://localhost:3022/meetingResponses?meetingId=${meetingId}`
+		)
+			.then((res) => {
+				if (!res.ok)
+					throw new Error('Failed to archive Meeting Responses');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		if (response.length > 0) return response;
+		return null;
+	};
+
+	const archiveMeeting = async (meeting) => {
+		const meetingResponses = await archiveMeetingResponses(meeting.id);
+		const response = await fetch(
+			'http://localhost:3022/archivedMeetings',
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					title: meeting.title,
+					description: meeting.description,
+					dateCreated: meeting.dateCreated,
+					createdBy: meeting.createdBy,
+					dateDueBy: meeting.dateDueBy,
+					meetingComplete: meeting.meetingComplete,
+					meetingId: meeting.id,
+					archivedMeetingResponses: [...meetingResponses],
+				}),
+			}
+		)
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to archive meeting');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
 	};
 
 	const deleteMeeting = async (meetingId) => {
-		return new Promise(async (success, failure) => {
-			try {
-				const response = await fetch(
-					`http://localhost:3022/meetings/${meetingId}`,
-					{
-						method: 'DELETE',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-					}
-				);
-				if (response.ok) {
-					const json = await response.json();
-					return success({
-						data: json,
-						toast: toast.success('Meeting deleted! ', toastStyle2),
-					});
-				} else {
-					failure(
-						new Error(`${response.status}: ${response.statusText}`),
-						toast.error(
-							`Server Error:  ${response.status}~ ${response.statusText}`,
-							toastStyle2
-						)
-					);
-				}
-			} catch (err) {
-				return failure({
-					data: null,
-					toast: toast.error(err.message, toastStyle2),
-				});
+		const response = await fetch(
+			`http://localhost:3022/meetings/${meetingId}`,
+			{
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
 			}
-		});
+		)
+			.then((res) => {
+				archiveMeeting(res.json());
+			})
+			.then(
+				fetch(`http://localhost:3022/meetings/${meetingId}`, {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				})
+			)
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to delete the Meeting');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
 	};
 
 	const updateMeeting = async (id, meeting) => {
-		return new Promise(async (success, failure) => {
-			try {
-				const response = await fetch(
-					`http://localhost:3022/meetings/${id}`,
-					{
-						method: 'PATCH',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ meetingComplete: meeting }),
-					}
-				);
-				if (response.ok) {
-					const json = await response.json();
-					return success({
-						data: json,
-						toast: toast.success('Meeting updated! ', toastStyle2),
-					});
-				} else {
-					failure(
-						new Error(`${response.status}: ${response.statusText}`),
-						toast.error(
-							`Server Error:  ${response.status}~ ${response.statusText}`,
-							toastStyle2
-						)
-					);
-				}
-			} catch (err) {
-				return failure({
-					data: null,
-					toast: toast.error(err.message, toastStyle2),
-				});
-			}
-		});
+		const response = await fetch(`http://localhost:3022/meetings/${id}`, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ meetingComplete: meeting }),
+		})
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to update meeting');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
 	};
 
 	const getAllUsers = async () => {
-		return new Promise(async (success, failure) => {
-			try {
-				const response = await fetch('http://localhost:3022/users');
-				if (response.ok) {
-					const json = await response.json();
-					const data = json.map((user) => {
-						const { id, firstName, lastName, email, meta } = user;
-						const { password, userTaskId, dateCreated, isAdmin } = meta;
-						return {
-							firstName,
-							lastName,
-							email,
-							meta: {
-								password,
-								userTaskId,
-								dateCreated,
-								isAdmin,
-							},
-							id,
-						};
-					});
-					return success({
-						data,
-						toast: toast.success('Sign in to stay on Task! ', toastStyle),
-					});
-				} else {
-					failure(
-						new Error(`${response.status}: ${response.statusText}`),
-						toast.error(
-							`Server Error:  ${response.status}~ ${response.statusText}`,
-							toastStyle
-						)
-					);
-				}
-			} catch (err) {
-				return failure({
-					data: null,
-					toast: toast.error(err.message, toastStyle),
-				});
-			}
-		});
+		const response = await fetch('http://localhost:3022/users')
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to get all users');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
 	};
 
 	const postNewUser = async (user) => {
-		return new Promise(async (success, failure) => {
-			try {
-				const response = await fetch('http://localhost:3022/users', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(user),
-				});
-				if (response.ok) {
-					const json = await response.json();
-					return success({
-						data: json,
-						toast: toast.success(
-							'Account created! Welcome to the team! ',
-							toastStyle
-						),
-					});
-				} else {
-					failure(
-						new Error(`${response.status}: ${response.statusText}`),
-						toast.error(
-							`Server Error:  ${response.status}~ ${response.statusText}`,
-							toastStyle
-						)
-					);
-				}
-			} catch (err) {
-				return failure({
-					data: null,
-					toast: toast.error(err.message, toastStyle),
-				});
-			}
-		});
+		const response = await fetch('http://localhost:3022/users', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(user),
+		})
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to create User');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
 	};
 
 	const deleteTask = async (taskId) => {
-		return new Promise(async (success, failure) => {
-			try {
-				const response = await fetch(
-					`http://localhost:3022/tasks/${taskId}`,
-					{
-						method: 'DELETE',
-					}
-				);
-				if (response.ok) {
-					const json = await response.json();
-					return success({
-						data: json,
-						toast: toast.success('Task Deleted!', toastStyle),
-					});
-				} else {
-					failure(
-						new Error(`${response.status}: ${response.statusText}`),
-						toast.error(
-							`Server Error:  ${response.status}~ ${response.statusText}`,
-							toastStyle
-						)
-					);
-				}
-			} catch (err) {
-				return failure({
-					data: null,
-					toast: toast.error(err.message, toastStyle),
-				});
-			}
-		});
+		const response = await fetch(`http://localhost:3022/tasks/${taskId}`, {
+			method: 'DELETE',
+		})
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to delete Task');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
 	};
 
 	const postNewTask = async (task) => {
-		return new Promise(async (success, failure) => {
-			try {
-				const response = await fetch('http://localhost:3022/tasks', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(task),
-				});
-				if (response.ok) {
-					const json = await response.json();
-					return success({
-						data: json,
-						toast: toast.success(
-							"Task created! Let's get busy! ",
-							toastStyle
-						),
-					});
-				} else {
-					failure(
-						new Error(`${response.status}: ${response.statusText}`),
-						toast.error(
-							`Server Error:  ${response.status}~ ${response.statusText}`,
-							toastStyle
-						)
-					);
-				}
-			} catch (err) {
-				return failure({
-					data: null,
-					toast: toast.error(err.message, toastStyle),
-				});
-			}
-		});
+		const response = await fetch('http://localhost:3022/tasks', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(task),
+		})
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to create new Task');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
 	};
 
 	const updateTask = async (taskId, taskComplete) => {
-		return new Promise(async (success, failure) => {
-			try {
-				const response = await fetch(
-					`http://localhost:3022/tasks/${taskId}`,
-					{
-						method: 'PATCH',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ taskComplete: taskComplete }),
-					}
-				);
-				if (response.ok) {
-					const json = await response.json();
-					return success({
-						data: json,
-						toast: toast.success('Task updated! ', toastStyle),
-					});
-				} else {
-					failure(
-						new Error(`${response.status}: ${response.statusText}`),
-						toast.error(
-							`Server Error:  ${response.status}~ ${response.statusText}`,
-							toastStyle
-						)
-					);
-				}
-			} catch (err) {
-				return failure({
-					data: null,
-					toast: toast.error(err.message, toastStyle),
-				});
-			}
-		});
+		const response = await fetch(`http://localhost:3022/tasks/${taskId}`, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ taskComplete: taskComplete }),
+		})
+			.then((res) => {
+				if (!res.ok) throw new Error('Failed to Update task');
+				return res.json();
+			})
+			.catch((err) => console.log(err));
+		return response;
 	};
 
 	return (
@@ -455,6 +244,8 @@ export const APIProvider = ({ children }) => {
 				postNewMeeting,
 				deleteMeeting,
 				updateMeeting,
+				getAllMeetingResponses,
+				postMeetingResponse,
 			}}
 		>
 			{children}
@@ -476,5 +267,7 @@ export const useAPIContext = () => {
 		postNewMeeting: context.postNewMeeting,
 		deleteMeeting: context.deleteMeeting,
 		updateMeeting: context.updateMeeting,
+		getAllMeetingResponses: context.getAllMeetingResponses,
+		postMeetingResponse: context.postMeetingResponse,
 	};
 };

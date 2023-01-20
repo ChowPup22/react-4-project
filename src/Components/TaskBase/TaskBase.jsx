@@ -44,10 +44,8 @@ export const TaskBase = ({
 
 	useEffect(() => {
 		getAllUsers().then((res) => {
-			if (res.data) {
-				const findUser = res.data.find(
-					(user) => user.meta.userTaskId === createdBy
-				);
+			if (res) {
+				const findUser = res.find((user) => user.id === createdBy);
 				setCreator(findUser.firstName + ' ' + findUser.lastName);
 			}
 		});
@@ -63,11 +61,8 @@ export const TaskBase = ({
 
 	const handleDelete = () => {
 		deleteTask(id).then((res) => {
-			if (res.data) {
+			if (res) {
 				refetchTasks();
-				return res.toast;
-			} else {
-				return res.toast;
 			}
 		});
 	};
@@ -85,11 +80,8 @@ export const TaskBase = ({
 	const handleTaskComplete = () => {
 		const updatedTask = !taskComplete;
 		updateTask(id, updatedTask).then((res) => {
-			if (res.data) {
+			if (res) {
 				refetchTasks();
-				return res.toast;
-			} else {
-				return res.toast;
 			}
 		});
 	};

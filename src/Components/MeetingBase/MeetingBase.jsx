@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import { toastStyle } from '../../Constants/styles';
 import { useAPIContext } from '../../Context/API.Context';
+import { useUserAuthContext } from '../../Context/UserAuth.Context';
 import styles from './MeetingBase.module.css';
 
 export const MeetingBase = ({
 	title,
 	description,
-	userId1,
-	userId2,
 	id,
 	createdBy,
 	dateDueBy,
@@ -14,10 +15,9 @@ export const MeetingBase = ({
 	refetchMeetings,
 }) => {
 	const { deleteMeeting, updateMeeting, getAllUsers } = useAPIContext();
+	const { currentUserId } = useUserAuthContext();
 	const [modal, setModal] = useState(false);
 	const [creator, setCreator] = useState('');
-	const [firstUser, setFirstUser] = useState('');
-	const [secondUser, setSecondUser] = useState('');
 	const dateDueByFormatted = new Date(dateDueBy).toString();
 
 	const getTimeRemaining = (dateDueBy) => {
@@ -46,30 +46,34 @@ export const MeetingBase = ({
 		}
 	};
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const updateMeetingFinished = (id) => {
+		updateMeeting(id).then(() => {
+			refetchMeetings();
+		});
+	};
+
+	const calcMeetingPast = (date) => {
+		const today = new Date();
+		const meetingDate = new Date(date);
+
+		return meetingDate.setHours(0, 0, 0, 0) <= today.setHours(0, 0, 0, 0);
+	};
+
+	useEffect(() => {
+		if (calcMeetingPast(dateDueBy)) {
+			updateMeetingFinished(id);
+		}
+	}, [dateDueBy, id, updateMeetingFinished]);
+
 	useEffect(() => {
 		getAllUsers().then((res) => {
-			if (res.data) {
-				const findCreator = res.data.find(
-					(user) => user.meta.userTaskId === createdBy
-				);
+			if (res) {
+				const findCreator = res.find((user) => user.id === createdBy);
 				setCreator(findCreator.firstName + ' ' + findCreator.lastName);
-
-				const findFirstUser = res.data.find(
-					(user) => user.meta.userTaskId === userId1
-				);
-				setFirstUser(
-					findFirstUser.firstName + ' ' + findFirstUser.lastName
-				);
-
-				const findSecondUser = res.data.find(
-					(user) => user.meta.userTaskId === userId2
-				);
-				setSecondUser(
-					findSecondUser.firstName + ' ' + findSecondUser.lastName
-				);
 			}
 		});
-	}, [createdBy, getAllUsers, userId1, userId2]);
+	}, [createdBy, getAllUsers]);
 
 	useEffect(() => {
 		document.addEventListener('keydown', handleModalEventListener);
@@ -90,26 +94,18 @@ export const MeetingBase = ({
 	};
 
 	const handleDelete = () => {
-		deleteMeeting(id).then((res) => {
-			if (res.data) {
-				refetchMeetings();
-				return res.toast;
-			} else {
-				return res.toast;
-			}
-		});
-	};
-
-	const handleMeetingComplete = () => {
-		const updatedMeeting = !meetingComplete;
-		updateMeeting(id, updatedMeeting).then((res) => {
-			if (res.data) {
-				refetchMeetings();
-				return res.toast;
-			} else {
-				return res.toast;
-			}
-		});
+		if (currentUserId === createdBy) {
+			deleteMeeting(id).then((res) => {
+				if (res) {
+					refetchMeetings();
+				}
+			});
+		} else {
+			toast.error(
+				'You must be the creator to delete a meeting',
+				toastStyle
+			);
+		}
 	};
 
 	return (
@@ -139,7 +135,7 @@ export const MeetingBase = ({
 						<input
 							type='checkbox'
 							checked={meetingComplete === true}
-							onChange={handleMeetingComplete}
+							readOnly={true}
 						/>
 						<span className={styles.slider}></span>
 					</label>
@@ -159,22 +155,24 @@ export const MeetingBase = ({
 						<hr style={{ width: '80%' }} />
 						<p>{description}</p>
 						<br />
-						<div style={{ display: 'flex', flexDirection: 'column' }}>
-							<span>Meeting Completed: </span>
-							<label className={styles.switchLg}>
-								<input
-									type='checkbox'
-									checked={meetingComplete === true}
-									onChange={handleMeetingComplete}
-								/>
-								<span className={styles.sliderLg}></span>
-							</label>
+						<div>
+							<div style={{ display: 'flex', flexDirection: 'column' }}>
+								<span>Meeting Finished: </span>
+								<label className={styles.switchLg}>
+									<input
+										type='checkbox'
+										checked={meetingComplete === true}
+										readOnly={true}
+									/>
+									<span className={styles.sliderLg}></span>
+								</label>
+							</div>
+							<div>
+								<span>Interested? </span>
+							</div>
 						</div>
 						<div style={{ fontSize: '12px' }}>
 							<p>Due By: {dateDueByFormatted}</p>
-							<p>
-								Meeting with {firstUser} & {secondUser}
-							</p>
 							<p style={{ color: 'lightgray' }}>Created By: {creator}</p>
 						</div>
 						<div className={styles.countdown}>
@@ -211,6 +209,7 @@ export const MeetingBase = ({
 							Close
 						</button>
 					</div>
+					<ToastContainer />
 				</div>
 			)}
 		</>

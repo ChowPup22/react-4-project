@@ -2,11 +2,20 @@ import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { buttonS, toastStyle } from '../Constants/styles';
 import { TaskBase } from './TaskBase/TaskBase';
 import { MeetingBase } from './MeetingBase/MeetingBase';
 import { useUserAuthContext } from '../Context/UserAuth.Context';
 import { useAPIContext } from '../Context/API.Context';
+import {
+	buttonS,
+	toastStyle,
+	messageBox,
+	dashboardMessage,
+	logoutButton,
+	logoutWrap,
+	link,
+	dashboardWrap,
+} from '../Constants/styles';
 
 export const Dashboard = () => {
 	const [redirect, setRedirect] = useState(false);
@@ -19,25 +28,27 @@ export const Dashboard = () => {
 		const user = JSON.parse(localStorage.getItem('user'));
 
 		if (user) {
-			getAllTasks(user.meta.userTaskId).then((res) => {
-				if (res.data) {
-					setAllTasks(res.data);
-					return res.toast;
+			getAllTasks(user.id).then((res) => {
+				if (res.length > 0) {
+					setAllTasks(res);
 				} else {
-					return res.toast;
+					return toast.success(
+						'Create a task or meeting to get started!',
+						toastStyle
+					);
 				}
 			});
 
-			getAllMeetings(user.meta.userTaskId).then((res) => {
-				if (res.data) {
-					setAllMeetings(res.data);
-					return res.toast;
-				} else {
-					return res.toast;
+			getAllMeetings().then((res) => {
+				if (res) {
+					setAllMeetings(res);
 				}
 			});
 		} else if (!user) {
-			toast.error('Please login to view dashboard', toastStyle);
+			toast.error(
+				'Please login or create an account to view dashboard',
+				toastStyle
+			);
 			setTimeout(() => {
 				setRedirect(true);
 			}, 3000);
@@ -46,20 +57,16 @@ export const Dashboard = () => {
 
 	const refetchTasks = () => {
 		getAllTasks(currentUserId).then((res) => {
-			if (res.data) {
-				setAllTasks(res.data);
-			} else {
-				return res.toast;
+			if (res) {
+				setAllTasks(res);
 			}
 		});
 	};
 
 	const refetchMeetings = () => {
-		getAllMeetings(currentUserId).then((res) => {
-			if (res.data) {
-				setAllMeetings(res.data);
-			} else {
-				return res.toast;
+		getAllMeetings().then((res) => {
+			if (res) {
+				setAllMeetings(res);
 			}
 		});
 	};
@@ -81,11 +88,7 @@ export const Dashboard = () => {
 				<h1>Dashboard</h1>
 				<button style={buttonS}>
 					<Link
-						style={{
-							color: '#fff',
-							textDecoration: 'none',
-							padding: '12px 20px',
-						}}
+						style={link}
 						to='create-task'
 					>
 						Create Task
@@ -94,11 +97,7 @@ export const Dashboard = () => {
 				<br />
 				<button style={buttonS}>
 					<Link
-						style={{
-							color: '#fff',
-							textDecoration: 'none',
-							padding: '12px 20px',
-						}}
+						style={link}
 						to='create-meeting'
 					>
 						Create Meeting
@@ -111,18 +110,22 @@ export const Dashboard = () => {
 					replace={true}
 				/>
 			) : null}
-			<div
-				style={{
-					display: 'flex',
-					flexDirection: 'row',
-					justifyContent: 'space-around',
-					marginTop: '75px',
-				}}
-			>
+			<div style={dashboardMessage}>
+				Welcome to the User Dashboard! Join meetings and create new tasks
+				or meetings to get the most out of your day!
+			</div>
+			<div style={dashboardWrap}>
 				<div style={{ marginLeft: '10px' }}>
 					<h2>Tasks</h2>
-					{allTasks.length > 0
-						? allTasks.map((task) => (
+					{allTasks.length === 0 ? (
+						<div style={messageBox}>
+							Your future 'todo' is waiting! <br /> Create a new task above
+							to begin
+						</div>
+					) : null}
+					{allTasks.length > 0 ? (
+						<>
+							{allTasks.map((task) => (
 								<TaskBase
 									key={task.id}
 									title={task.title}
@@ -133,11 +136,18 @@ export const Dashboard = () => {
 									dateDueBy={task.dateDueBy}
 									refetchTasks={refetchTasks}
 								/>
-						  ))
-						: null}
+							))}
+						</>
+					) : null}
 				</div>
 				<div style={{ marginRight: '10px' }}>
 					<h2>Meetings</h2>
+					{allMeetings.length === 0 ? (
+						<div style={messageBox}>
+							Sometimes it's best to do it yourself! <br /> Create a new
+							meeting above to begin
+						</div>
+					) : null}
 					{allMeetings.length > 0
 						? allMeetings.map((meeting) => (
 								<MeetingBase
@@ -148,29 +158,15 @@ export const Dashboard = () => {
 									meetingComplete={meeting.meetingComplete}
 									createdBy={meeting.createdBy}
 									dateDueBy={meeting.dateDueBy}
-									userId1={meeting.userId1}
-									userId2={meeting.userId2}
 									refetchMeetings={refetchMeetings}
 								/>
 						  ))
 						: null}
 				</div>
 			</div>
-			<div
-				style={{
-					position: 'absolute',
-					top: '145px',
-					right: '20px',
-				}}
-			>
+			<div style={logoutWrap}>
 				<button
-					style={{
-						color: '#fff',
-						textDecoration: 'none',
-						backgroundColor: '#c44300',
-						padding: '3px 5px',
-						borderRadius: '5px',
-					}}
+					style={logoutButton}
 					onClick={handleLogout}
 				>
 					Sign Out

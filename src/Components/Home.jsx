@@ -1,25 +1,14 @@
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useUserAuthContext } from '../Context/UserAuth.Context';
 import { headerP, paragraph, buttonP, theme } from '../Constants/styles';
 
 export const Home = () => {
-	const { currentUserId } = useUserAuthContext();
-
-	useEffect(() => {
-		if (currentUserId !== '') {
-			window.location.href = '/dashboard';
-		}
-	}, [currentUserId]);
-
 	return (
 		<>
-			<h3 style={headerP}>Home</h3>
+			<h2 style={headerP}>Home</h2>
 			<p style={paragraph}>
-				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quod
-				ipsum reiciendis autem, veritatis illum impedit. Dignissimos vel
-				inventore error eos nostrum. Sapiente reiciendis dolorum voluptatum
-				nisi culpa quae rerum ullam?
+				Welcome to <b>Task Hound</b>! Here you can create and manage your
+				daily tasks or create meetings with the community. To get started,
+				please sign in or create an account.
 			</p>
 			<div
 				style={{ display: 'flex', margin: '25px auto', maxWidth: '500px' }}

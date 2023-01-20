@@ -2,10 +2,17 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAPIContext } from '../Context/API.Context';
 import { useUserAuthContext } from '../Context/UserAuth.Context';
-import { headerP, buttonP, theme, passToggle } from '../Constants/styles';
+import {
+	headerP,
+	buttonP,
+	theme,
+	passToggle,
+	toastStyle,
+} from '../Constants/styles';
 import { INIT_PASS, INIT_SIGN, visible } from '../Constants/constants';
 import InputBase from './InputBase/InputBase';
 import { validations } from '../Constants/Validations';
@@ -21,11 +28,12 @@ export const SignIn = () => {
 
 	useEffect(() => {
 		getAllUsers().then((res) => {
-			if (res.data) {
-				setAllUsers(res.data);
-				return res.toast;
-			} else {
-				return res.toast;
+			if (res) {
+				setAllUsers(res);
+				toast.success(
+					'Welcome back! Sign in to continue or create an account',
+					toastStyle
+				);
 			}
 		});
 	}, [getAllUsers, setAllUsers]);
@@ -84,7 +92,7 @@ export const SignIn = () => {
 		if (!errorCheck) {
 			const user = allUsers.find((item) => item.email === email);
 			if (user) {
-				if (user.meta.password === pass) {
+				if (user.password === pass) {
 					registerUser(user);
 					setSubmit(true);
 				} else {

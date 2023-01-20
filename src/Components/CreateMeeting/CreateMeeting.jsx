@@ -11,47 +11,33 @@ import { validations } from '../../Constants/Validations';
 
 export const CreateMeeting = () => {
 	const { postNewMeeting } = useAPIContext();
-	const { currentUserId, allUsers, currentUser } = useUserAuthContext();
+	const { currentUserId } = useUserAuthContext();
 	const [redirect, setRedirect] = useState(false);
 	const [direct, setDirect] = useState(false);
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [dateDueBy, setDateDueBy] = useState('');
-	const [userId1, setUserId1] = useState('');
-	const [userId2, setUserId2] = useState('');
-	const [isAdmin, setIsAdmin] = useState(false);
 	const [inputError, setInputError] = useState({});
 
 	useEffect(() => {
-		if (currentUserId !== null) {
-			if (currentUser.meta.isAdmin === true) {
-				setIsAdmin(true);
-			} else if (currentUser.meta.isAdmin === false) {
-				setIsAdmin(false);
-				setUserId1(currentUserId);
-			}
-		} else if (currentUserId === null) {
+		if (currentUserId === null) {
 			toast.error('Please login to create a meeting', toastStyle);
 			setTimeout(() => {
 				setRedirect(true);
 			}, 3000);
 		}
-	}, [currentUserId, allUsers, currentUser]);
+	}, [currentUserId]);
 
 	const handleInputState = {
 		title: (value) => setTitle(value),
 		description: (value) => setDescription(value),
 		dateDueBy: (value) => setDateDueBy(value),
-		userId1: (value) => setUserId1(value),
-		userId2: (value) => setUserId2(value),
 	};
 
 	const handleValues = {
 		title: title,
 		description: description,
 		dateDueBy: dateDueBy,
-		userId1: userId1,
-		userId2: userId2,
 	};
 
 	const handleInput = ({ target: { name, value } }) => {
@@ -89,8 +75,6 @@ export const CreateMeeting = () => {
 			const meeting = {
 				title,
 				description,
-				userId1,
-				userId2,
 				dateCreated: new Date().toISOString(),
 				createdBy: currentUserId,
 				dateDueBy,
@@ -98,12 +82,10 @@ export const CreateMeeting = () => {
 			};
 
 			postNewMeeting(meeting).then((res) => {
-				if (res.data) {
+				if (res) {
 					setTimeout(() => {
 						setDirect(true);
 					}, 3000);
-				} else {
-					return res.toast;
 				}
 			});
 		}
@@ -156,60 +138,6 @@ export const CreateMeeting = () => {
 						</label>
 					</div>
 					<div>
-						{isAdmin && (
-							<label>
-								<div className={styles.header}>Assign User 1</div>
-								<select
-									key='userId1Input'
-									className={styles.input_root}
-									name='userId1'
-									value={userId1}
-									onBlur={handleBlur}
-									onChange={handleInput}
-								>
-									<option value=''>Select User</option>
-									{allUsers.map((user) => (
-										<option
-											key={user.id}
-											value={user.meta.userTaskId}
-										>
-											{user.firstName + ' ' + user.lastName}
-										</option>
-									))}
-								</select>
-								{inputError.userId1Error && (
-									<div className={styles.error}>
-										{inputError.userId1Error}
-									</div>
-								)}
-							</label>
-						)}
-						<label>
-							<div className={styles.header}>Assign User 2</div>
-							<select
-								key='userId2Input'
-								className={styles.input_root}
-								name='userId2'
-								value={userId2}
-								onBlur={handleBlur}
-								onChange={handleInput}
-							>
-								<option value=''>Select User</option>
-								{allUsers.map((user) => (
-									<option
-										key={user.id}
-										value={user.meta.userTaskId}
-									>
-										{user.firstName + ' ' + user.lastName}
-									</option>
-								))}
-							</select>
-							{inputError.userId2Error && (
-								<div className={styles.error}>
-									{inputError.userId2Error}
-								</div>
-							)}
-						</label>
 						<label>
 							<div className={styles.header}>Date Due By: </div>
 							<DateTimePicker

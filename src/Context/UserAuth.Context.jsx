@@ -7,22 +7,21 @@ export const UserAuthProvider = ({ children }) => {
 	const [allUsers, setAllUsers] = useState([]);
 	const [currentUser, setCurrentUser] = useState({});
 	const [currentUserId, setCurrentUserId] = useState('');
-	const { postNewUser } = useAPIContext();
+	const { postNewUser, getAllUsers } = useAPIContext();
 
 	const registerNewUser = (user) => {
 		return postNewUser(user).then((user) => {
-			localStorage.setItem('user', JSON.stringify(user.data));
-			setCurrentUser(user.data);
-			setAllUsers([...allUsers, user.data]);
-			setCurrentUserId(user.data.meta.userTaskId);
-			return user.toast;
+			localStorage.setItem('user', JSON.stringify(user));
+			setCurrentUser(user);
+			setAllUsers([...allUsers, user]);
+			setCurrentUserId(user.id);
 		});
 	};
 
 	const registerUser = (user) => {
 		localStorage.setItem('user', JSON.stringify(user));
 		setCurrentUser(user);
-		setCurrentUserId(user.meta.userTaskId);
+		setCurrentUserId(user.id);
 	};
 
 	const logoutUser = () => {
@@ -35,8 +34,11 @@ export const UserAuthProvider = ({ children }) => {
 		const user = JSON.parse(localStorage.getItem('user'));
 		if (user) {
 			setCurrentUser(user);
-			setCurrentUserId(user.meta.userTaskId);
+			setCurrentUserId(user.id);
 		}
+		getAllUsers().then((res) => {
+			if (res) setAllUsers(res);
+		});
 	}, []);
 
 	return (

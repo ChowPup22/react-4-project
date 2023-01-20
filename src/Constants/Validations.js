@@ -10,6 +10,18 @@ const onlyTextValidation = (value) => {
   }
 };
 
+const userIdValidation = (value) => {
+  if (value) {
+    if (/^\d*$/i.test(value)) {
+      return undefined;
+    } else {
+      return 'Must select a user'
+    }
+  } else {
+    return undefined;
+  }
+}
+
 const descriptionValidation = (value) => {
   if (value) {
     if (/^(.|\s)*[a-zA-Z]+(.|\s)*$/i.test(value)) {
@@ -68,7 +80,5 @@ export const validations = {
   title: (value) => onlyTextValidation(value),
   description: (value) => descriptionValidation(value),
   dateDueBy: (value) => dateValidation(value),
-  userTaskId: (value) => descriptionValidation(value),
-  userId1: (value) => descriptionValidation(value),
-  userId2: (value) => descriptionValidation(value),
+  userId: (value) => userIdValidation(value),
 }

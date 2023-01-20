@@ -97,3 +97,48 @@ export const passToggle = {
   fontSize: '28px',
 }
 
+export const messageBox = {
+  fontSize: '16px',
+  color: '#2286c3',
+  fontWeight: '500',
+  width: '300px',
+  border: '2px solid #64b5f6',
+  borderRadius: '6px',
+  padding: '5px 8px',
+}
+
+export const dashboardMessage = {
+  fontSize: '18px',
+  color: '#2286c3',
+  width: '500px',
+  fontWeight: '400',
+  margin: '5px auto',
+}
+
+export const logoutButton = {
+  color: '#fff',
+  textDecoration: 'none',
+  backgroundColor: '#ff7300',
+  padding: '3px 5px',
+  borderRadius: '5px',
+  border: '1px solid transparent',
+}
+
+export const link = {
+  color: '#fff',
+  textDecoration: 'none',
+  padding: '12px 20px',
+}
+
+export const logoutWrap = {
+  position: 'absolute',
+  top: '140px',
+  right: '10px',
+}
+
+export const dashboardWrap = {
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  marginTop: '75px',
+}

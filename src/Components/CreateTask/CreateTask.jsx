@@ -17,17 +17,17 @@ export const CreateTask = () => {
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [dateDueBy, setDateDueBy] = useState('');
-	const [userTaskId, setUserTaskId] = useState('');
+	const [userId, setUserId] = useState('');
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [inputError, setInputError] = useState({});
 
 	useEffect(() => {
 		if (currentUserId !== null) {
-			if (currentUser.meta.isAdmin === true) {
+			if (currentUser.isAdmin === true) {
 				setIsAdmin(true);
-			} else if (currentUser.meta.isAdmin === false) {
+			} else if (currentUser.isAdmin === false) {
 				setIsAdmin(false);
-				setUserTaskId(currentUserId);
+				setUserId(currentUserId);
 			}
 		} else if (currentUserId === null) {
 			toast.error('Please login to create a task', toastStyle);
@@ -41,14 +41,14 @@ export const CreateTask = () => {
 		title: (value) => setTitle(value),
 		description: (value) => setDescription(value),
 		dateDueBy: (value) => setDateDueBy(value),
-		userTaskId: (value) => setUserTaskId(value),
+		userId: (value) => setUserId(value),
 	};
 
 	const handleValues = {
 		title: title,
 		description: description,
 		dateDueBy: dateDueBy,
-		userTaskId: userTaskId,
+		userId: userId,
 	};
 
 	const handleInput = ({ target: { name, value } }) => {
@@ -89,18 +89,16 @@ export const CreateTask = () => {
 				taskComplete: false,
 				dateDueBy,
 				dateCreated: new Date().toISOString(),
-				userTaskId,
+				userId,
 				createdBy: currentUserId,
 			};
 
 			postNewTask(task).then((res) => {
-				if (res.data) {
+				if (res) {
 					toast.success('Task created!', toastStyle);
 					setTimeout(() => {
 						setDirect(true);
 					}, 3000);
-				} else {
-					return res.toast;
 				}
 			});
 		}
@@ -156,8 +154,8 @@ export const CreateTask = () => {
 								<div className={styles.header}>Assign To</div>
 								<select
 									className={styles.input_root}
-									name='userTaskId'
-									value={userTaskId}
+									name='userId'
+									value={userId}
 									onBlur={handleBlur}
 									onChange={handleInput}
 								>
@@ -165,15 +163,15 @@ export const CreateTask = () => {
 									{allUsers.map((user) => (
 										<option
 											key={user.id}
-											value={user.meta.userTaskId}
+											value={user.id}
 										>
 											{user.firstName + ' ' + user.lastName}
 										</option>
 									))}
 								</select>
-								{inputError.userTaskIdError && (
+								{inputError.userIdError && (
 									<div className={styles.error}>
-										{inputError.userTaskIdError}
+										{inputError.userIdError}
 									</div>
 								)}
 							</label>
