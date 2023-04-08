@@ -1,6 +1,8 @@
 import { writeFileSync } from 'fs';
 import { faker } from '@faker-js/faker';
 
+// file deepcode ignore NoHardcodedPasswords: < proof of concept / developer hardcoded logins >
+
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 const sample = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const range = (n) => Array.from(Array(n).keys());
@@ -64,21 +66,6 @@ const db = {
     meetingId: sample(range(meetingAmount)),
     userId: sample(userIds),
     response: sample(['accepted', 'rejected']),
-    id,
-  })),
-  archivedMeetings: range(meetingAmount).map((id) => ({
-    title: faker.lorem.sentence(4),
-    description: faker.lorem.paragraph(),
-    dateCreated: faker.date.recent(20),
-    createdBy: sample(userIds),
-    dateDueBy: faker.date.recent(10),
-    meetingComplete: true,
-    archivedMeetingResponses: range(5).map((id) => ({
-      meetingId: sample(range(meetingAmount)),
-      userId: sample(userIds),
-      response: 'accepted',
-      id,
-    })),
     id,
   }))
 }

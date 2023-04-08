@@ -37,7 +37,7 @@ export const CreateMeeting = () => {
 	const handleValues = {
 		title: title,
 		description: description,
-		dateDueBy: dateDueBy,
+		dateDueBy: dateDueBy.toString(),
 	};
 
 	const handleInput = ({ target: { name, value } }) => {
@@ -101,6 +101,7 @@ export const CreateMeeting = () => {
 						display: 'flex',
 						flexDirection: 'row',
 						justifyContent: 'space-around',
+						flexWrap: 'wrap',
 					}}
 				>
 					<div>
@@ -146,6 +147,11 @@ export const CreateMeeting = () => {
 								onChange={handleInputState.dateDueBy}
 								value={dateDueBy}
 							/>
+							{inputError.dateDueByError && (
+								<div className={styles.error}>
+									{inputError.dateDueByError}
+								</div>
+							)}
 						</label>
 					</div>
 				</form>

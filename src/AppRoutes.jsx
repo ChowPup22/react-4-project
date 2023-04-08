@@ -1,30 +1,56 @@
 import { Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useAPIContext } from './Context/API.Context';
-import { Dashboard } from './Components/Dashboard';
-import { Home } from './Components/Home';
-import { NotFound } from './Components/NotFound';
-import { SignIn } from './Components/SignIn';
 import { brandBorder, brandHeader, brandLogo } from './Constants/styles';
 import { images } from './assets/images';
-import { CreateAccount } from './Components/CreateAccount';
-import { CreateTask } from './Components/CreateTask/CreateTask';
-import { CreateMeeting } from './Components/CreateMeeting/CreateMeeting';
+import { lazy, Suspense } from 'react';
+import ReactLoading from 'react-loading';
+
+const Home = lazy(() =>
+	import('./Components/Home').then((module) => ({ default: module.Home }))
+);
+
+const Dashboard = lazy(() =>
+	import('./Components/Dashboard').then((module) => ({
+		default: module.Dashboard,
+	}))
+);
+
+const NotFound = lazy(() =>
+	import('./Components/NotFound').then((module) => ({
+		default: module.NotFound,
+	}))
+);
+
+const SignIn = lazy(() =>
+	import('./Components/SignIn').then((module) => ({
+		default: module.SignIn,
+	}))
+);
+
+const CreateAccount = lazy(() =>
+	import('./Components/CreateAccount').then((module) => ({
+		default: module.CreateAccount,
+	}))
+);
+
+const CreateTask = lazy(() =>
+	import('./Components/CreateTask/CreateTask').then((module) => ({
+		default: module.CreateTask,
+	}))
+);
+
+const CreateMeeting = lazy(() =>
+	import('./Components/CreateMeeting/CreateMeeting').then((module) => ({
+		default: module.CreateMeeting,
+	}))
+);
+
+const AllMeetings = lazy(() =>
+	import('./Components/AllMeetings').then((module) => ({
+		default: module.AllMeetings,
+	}))
+);
 
 export const AppRoutes = () => {
-	const { getAllMeetings, deleteMeeting } = useAPIContext();
-
-	useEffect(() => {
-		getAllMeetings().then((res) => {
-			res.forEach((meeting) => {
-				if (meeting.meetingComplete === true) {
-					deleteMeeting(meeting.id);
-					return;
-				}
-			});
-		});
-	}, [deleteMeeting, getAllMeetings]);
-
 	return (
 		<>
 			<div
@@ -42,39 +68,56 @@ export const AppRoutes = () => {
 					<h1 style={brandHeader}>Task Hound</h1>
 				</div>
 			</div>
-			<Routes>
-				<Route
-					path='/'
-					element={<Home />}
-				/>
-				<Route
-					path='sign-in'
-					element={<SignIn />}
-				/>
-				<Route
-					path='create-account'
-					element={<CreateAccount />}
-				/>
-				<Route path='dashboard'>
+			<Suspense
+				fallback={
+					<div style={{ justifyContent: 'center', margin: '0 auto' }}>
+						<ReactLoading
+							type='bubbles'
+							color='#ff7300'
+							height={1000}
+							width={500}
+						/>
+					</div>
+				}
+			>
+				<Routes>
 					<Route
-						index
-						element={<Dashboard />}
+						path='/'
+						element={<Home />}
 					/>
 					<Route
-						path='create-task'
-						element={<CreateTask />}
+						path='sign-in'
+						element={<SignIn />}
 					/>
 					<Route
-						path='create-meeting'
-						element={<CreateMeeting />}
+						path='create-account'
+						element={<CreateAccount />}
 					/>
-				</Route>
+					<Route path='dashboard'>
+						<Route
+							index
+							element={<Dashboard />}
+						/>
+						<Route
+							path='create-task'
+							element={<CreateTask />}
+						/>
+						<Route
+							path='create-meeting'
+							element={<CreateMeeting />}
+						/>
+						<Route
+							path='all-meetings'
+							element={<AllMeetings />}
+						/>
+					</Route>
 
-				<Route
-					path='*'
-					element={<NotFound />}
-				/>
-			</Routes>
+					<Route
+						path='*'
+						element={<NotFound />}
+					/>
+				</Routes>
+			</Suspense>
 		</>
 	);
 };

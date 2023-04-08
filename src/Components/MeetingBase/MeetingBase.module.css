@@ -19,7 +19,7 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #ccc;
+	background-color: lightgreen;
 	-webkit-transition: 0.4s;
 	transition: 0.4s;
 }
@@ -37,11 +37,11 @@
 }
 
 input:checked + .slider {
-	background-color: #64b5f6;
+	background-color: #ff7300;
 }
 
 input:focus + .slider {
-	box-shadow: 0 0 1px #64b5f6;
+	box-shadow: 0 0 1px #ff7300;
 }
 
 input:checked + .slider:before {
@@ -71,7 +71,7 @@ input:checked + .slider:before {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #ccc;
+	background-color: lightgreen;
 	-webkit-transition: 0.4s;
 	transition: 0.4s;
 }
@@ -89,11 +89,11 @@ input:checked + .slider:before {
 }
 
 input:checked + .sliderLg {
-	background-color: #64b5f6;
+	background-color: #ff7300;
 }
 
 input:focus + .sliderLg {
-	box-shadow: 0 0 1px #64b5f6;
+	box-shadow: 0 0 1px #ff7300;
 }
 
 input:checked + .sliderLg:before {
@@ -116,13 +116,15 @@ input:checked + .sliderLg:before {
 
 .modalContent {
 	background-color: #fefefe;
-	margin: 15% auto;
+	margin: 12vh auto;
 	padding: 20px;
 	border: 1px solid #888;
 	border-radius: 8px;
 	width: 80%;
+	max-width: 800px;
 	z-index: 11;
 	position: relative;
+	overflow: visible;
 }
 
 .taskWrap {
@@ -168,4 +170,30 @@ p.pTruncate {
 	position: absolute;
 	top: 6px;
 	right: 6px;
+}
+
+.responseForm {
+	display: flex;
+	flex-direction: row;
+}
+
+.responseInput {
+	display: flex;
+	flex-direction: column;
+	border-radius: 5px;
+	padding: 5px;
+	margin: 5px;
+	border: 2px solid;
+}
+
+.responseButton {
+	background-color: #ff7300;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 500;
+	padding: 3px 8px;
+	margin: 5px 0;
+	border-radius: 5px;
+	border: none;
+	width: fit-content;
 }

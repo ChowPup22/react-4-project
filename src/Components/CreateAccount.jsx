@@ -133,7 +133,7 @@ export const CreateAccount = () => {
 					style={{
 						margin: '0 auto',
 						position: 'relative',
-						width: '650px',
+						width: '500px',
 					}}
 				>
 					{INIT_CREATE.map((item) => (

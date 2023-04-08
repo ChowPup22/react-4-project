@@ -118,7 +118,7 @@ export const SignIn = () => {
 					style={{
 						margin: '0 auto',
 						position: 'relative',
-						width: '650px',
+						width: '500px',
 					}}
 				>
 					{INIT_SIGN.map((item) => (

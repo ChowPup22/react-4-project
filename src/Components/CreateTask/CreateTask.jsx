@@ -114,6 +114,7 @@ export const CreateTask = () => {
 						display: 'flex',
 						flexDirection: 'row',
 						justifyContent: 'space-around',
+						flexWrap: 'wrap',
 					}}
 				>
 					<div>

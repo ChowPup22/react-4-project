@@ -78,20 +78,20 @@ export const buttonP = {
 export const buttonS = {
   backgroundColor: theme.colorS,
   color: theme.colorSText,
-  fontSize: '1.2rem',
+  fontSize: '1rem',
   fontWeight: '500',
-  padding: '6px 10px',
+  padding: '6px 0',
   borderRadius: '5px',
   border: 'none',
   cursor: 'pointer',
-  margin: '10px auto',
+  margin: '8px auto',
   display: 'block',
 }
 
 export const passToggle = {
   position: 'absolute',
   top: '134px',
-  right: '158px',
+  right: '85px',
   color: 'gray',
   cursor: 'pointer',
   fontSize: '28px',
@@ -110,9 +110,10 @@ export const messageBox = {
 export const dashboardMessage = {
   fontSize: '18px',
   color: '#2286c3',
-  width: '500px',
+  width: '475px',
   fontWeight: '400',
   margin: '5px auto',
+  textAlign: 'center'
 }
 
 export const logoutButton = {
@@ -132,7 +133,7 @@ export const link = {
 
 export const logoutWrap = {
   position: 'absolute',
-  top: '140px',
+  top: '158px',
   right: '10px',
 }
 
@@ -140,5 +141,18 @@ export const dashboardWrap = {
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'space-around',
-  marginTop: '75px',
+  marginTop: '25px',
+  flexWrap: 'wrap'
+}
+
+export const styles = {
+  buttonS,
+  toastStyle,
+  messageBox,
+  dashboardMessage,
+  logoutButton,
+  logoutWrap,
+  link,
+  dashboardWrap,
+  headerP,
 }
